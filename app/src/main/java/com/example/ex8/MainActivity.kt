@@ -16,9 +16,9 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val workManager = WorkManager.getInstance(this)
+        val workManager = WorkManager.getInstance(RootApp.getInstance())
         if (holder == null) {
-            holder = RootHolderImpl(this)
+            holder = RootHolderImpl(RootApp.getInstance())
         }
         val adapter = Adapter(holder!!)
         val recycler = findViewById<RecyclerView>(R.id.recyclerTodoItemsList)
@@ -57,7 +57,12 @@ class MainActivity : AppCompatActivity() {
                     val root1 = work.outputData.getLong("root1", 0)
                     val root2 = work.outputData.getLong("root2", 0)
                     val item = holder!!.getCurrentItems().get(curr_pos)
-                    item.set_answer(root1.toString() + "x" + root2.toString())
+                    if (root1==0L){
+                        item.set_answer("prime")
+                    }
+                    else{
+                        item.set_answer(root1.toString() + "x" + root2.toString())
+                    }
                     val new_pos = holder!!.markItemDone(work.id)
                     workManager.cancelWorkById(work.id)
                     adapter.notifyItemMoved(curr_pos, new_pos)
